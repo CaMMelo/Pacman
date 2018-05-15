@@ -11,8 +11,8 @@ class Pacman(character.Character):
     sprites = globals.PACMAN_SPRITES
     current = 0
 
-    def __init__(self, grid_pos, way, direction): # 1 2 4 8 16
-        super().__init__(grid_pos, 8, way, direction)
+    def __init__(self, grid_pos, way, direction):
+        super().__init__(grid_pos, 4, way, direction)
 
     def consume_pellet(self, grid):
 

@@ -3,6 +3,8 @@ import character
 import globals
 import config
 
+from random import randint
+
 # states
 CHASE       = 0
 FRIGHTENED  = 1
@@ -12,19 +14,19 @@ class Ghost(character.Character):
 
     state = CHASE
 
-    sprites = globals.GHOSTS_SPRITES[0]
     frightened_sprites = globals.GHOSTS_SPRITES[4]
     current = 0
 
     def __init__(self, grid_pos, way, direction, home):
-        super().__init__(grid_pos, 4, way, direction)
+        super().__init__(grid_pos, 3, way, direction)
 
         self.home = home
 
     def euclidians_distance(self, a, b):
-        return ( (b[0]-a[0])**2 + (b[1]-a[1])**2 )**(1/2)
 
-    def update_way(self, grid):
+        return ((b[0]-a[0])**2 + (b[1]-a[1])**2)**(1/2)
+
+    def update_way(self, grid, chase_args):
 
         flags = grid[self.grid_pos[1]][self.grid_pos[0]] >> 3
 
@@ -54,9 +56,15 @@ class Ghost(character.Character):
 
             dist = float('inf')
 
+            if self.state == SCATTER:
+                self.target = self.home
+            if self.state == FRIGHTENED:
+                self.target = (randint(0, config.GRID_SIZE[0]), randint(0, config.GRID_SIZE[1]))
+            if self.state == CHASE:
+                self.target = self.chase(chase_args)
+
             if flags & globals.DOWN:
                 point = (self.grid_pos[0], self.grid_pos[1] + 1)
-
                 d = self.euclidians_distance(point, self.target)
 
                 if d < dist:
@@ -66,60 +74,102 @@ class Ghost(character.Character):
 
             if flags & globals.UP:
                 point = (self.grid_pos[0], self.grid_pos[1] - 1)
-
                 d = self.euclidians_distance(point, self.target)
 
                 if d < dist:
-
                     dist = d
                     self.direction = 1
                     self.way = 0
 
             if flags & globals.RIGHT:
                 point = (self.grid_pos[0] + 1, self.grid_pos[1])
-
                 d = self.euclidians_distance(point, self.target)
 
                 if d < dist:
-
                     dist = d
                     self.way = 1
                     self.direction = 0
 
             if flags & globals.LEFT:
                 point = (self.grid_pos[0] - 1, self.grid_pos[1])
-
                 d = self.euclidians_distance(point, self.target)
 
                 if d < dist:
-
                     dist = d
                     self.way = 0
                     self.direction = 0
 
-    def update(self, screen, grid):
+    def update(self, screen, grid, chase_args):
 
         self.move()
-        self.update_way(grid)
+        self.update_way(grid, chase_args)
 
         if self.state == FRIGHTENED:
-
             screen.blit(self.frightened_sprites[self.current], self.rect)
-
         else:
-
             screen.blit(self.sprites[self.direction][self.way][self.current], self.rect)
 
         self.current = (self.current + 1 ) % 2
 
 class Blinky(Ghost):
-    pass
+
+    sprites = globals.GHOSTS_SPRITES[0]
+
+    def __init__(self, grid_pos, way, direction):
+        super().__init__(grid_pos, way, direction, (config.GRID_SIZE[0], 0))
+
+    def chase(self, chase_args):
+        return chase_args[0]
 
 class Pinky(Ghost):
-    pass
+
+    sprites = globals.GHOSTS_SPRITES[1]
+
+    def __init__(self, grid_pos, way, direction):
+        super().__init__(grid_pos, way, direction, (0, 0))
+
+    def chase(self, chase_args):
+
+        if self.direction == globals.Y_DIRECTION:
+
+            if self.way == globals.PLUS_WAY:
+                return (chase_args[0][0], chase_args[0][1] + 4)
+            else:
+                return (chase_args[0][0], chase_args[0][1] - 4)
+        else:
+
+            if self.way == globals.PLUS_WAY:
+                return (chase_args[0][0] + 4, chase_args[0][1])
+            else:
+                return (chase_args[0][0] - 4, chase_args[0][1])
 
 class Inky(Ghost):
-    pass
+
+    sprites = globals.GHOSTS_SPRITES[2]
+
+    def __init__(self, grid_pos, way, direction):
+        super().__init__(grid_pos, way, direction, config.GRID_SIZE)
+
+    def chase(self, chase_args):
+
+        pacman = chase_args[0]
+        blinky = chase_args[1]
+
+        return (blinky[0] + (pacman[0] - blinky[0])*2,
+                blinky[1] + (pacman[1] - blinky[1])*2)
 
 class Clyde(Ghost):
-    pass
+
+    sprites = globals.GHOSTS_SPRITES[3]
+
+    def __init__(self, grid_pos, way, direction):
+        super().__init__(grid_pos, way, direction, (0, config.GRID_SIZE[1]))
+
+    def chase(self, chase_args):
+
+        dist = self.euclidians_distance(self.grid_pos, chase_args[0])
+
+        if dist >= 8:
+            return chase_args[0]
+        else:
+            return self.home

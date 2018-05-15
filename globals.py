@@ -36,37 +36,102 @@ GHOSTS_SPRITES = [
     [ # blinky
         [
             [
-                pygame.image.load('images/blinky_left_0000.png'),
-                pygame.image.load('images/blinky_left_0001.png')
+                pygame.image.load('images/blinky/left_0000.png'),
+                pygame.image.load('images/blinky/left_0001.png')
             ],
             [
-                pygame.image.load('images/blinky_right_0000.png'),
-                pygame.image.load('images/blinky_right_0001.png')
+                pygame.image.load('images/blinky/right_0000.png'),
+                pygame.image.load('images/blinky/right_0001.png')
             ]
         ],
 
         [
             [
-                pygame.image.load('images/blinky_up_0000.png'),
-                pygame.image.load('images/blinky_up_0001.png')
+                pygame.image.load('images/blinky/up_0000.png'),
+                pygame.image.load('images/blinky/up_0001.png')
             ],
             [
-                pygame.image.load('images/blinky_down_0000.png'),
-                pygame.image.load('images/blinky_down_0001.png')
+                pygame.image.load('images/blinky/down_0000.png'),
+                pygame.image.load('images/blinky/down_0001.png')
             ]
         ]
     ],
 
     [ # pinky
+        [
+            [
+                pygame.image.load('images/pinky/left_0000.png'),
+                pygame.image.load('images/pinky/left_0001.png')
+            ],
+            [
+                pygame.image.load('images/pinky/right_0000.png'),
+                pygame.image.load('images/pinky/right_0001.png')
+            ]
+        ],
+
+        [
+            [
+                pygame.image.load('images/pinky/up_0000.png'),
+                pygame.image.load('images/pinky/up_0001.png')
+            ],
+            [
+                pygame.image.load('images/pinky/down_0000.png'),
+                pygame.image.load('images/pinky/down_0001.png')
+            ]
+        ]
     ],
 
     [ # inky
+        [
+            [
+                pygame.image.load('images/inky/left_0000.png'),
+                pygame.image.load('images/inky/left_0001.png')
+            ],
+            [
+                pygame.image.load('images/inky/right_0000.png'),
+                pygame.image.load('images/inky/right_0001.png')
+            ]
+        ],
+
+        [
+            [
+                pygame.image.load('images/inky/up_0000.png'),
+                pygame.image.load('images/inky/up_0001.png')
+            ],
+            [
+                pygame.image.load('images/inky/down_0000.png'),
+                pygame.image.load('images/inky/down_0001.png')
+            ]
+        ]
     ],
 
     [ # clyde
+        [
+            [
+                pygame.image.load('images/clyde/left_0000.png'),
+                pygame.image.load('images/clyde/left_0001.png')
+            ],
+            [
+                pygame.image.load('images/clyde/right_0000.png'),
+                pygame.image.load('images/clyde/right_0001.png')
+            ]
+        ],
+
+        [
+            [
+                pygame.image.load('images/clyde/up_0000.png'),
+                pygame.image.load('images/clyde/up_0001.png')
+            ],
+            [
+                pygame.image.load('images/clyde/down_0000.png'),
+                pygame.image.load('images/clyde/down_0001.png')
+            ]
+        ]
     ],
 
     [ # frightened
+        pygame.image.load('images/ghost_frightened_0000.png'),
+        pygame.image.load('images/ghost_frightened_0001.png')
     ]
 ]
 
