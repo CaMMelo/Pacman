@@ -2,6 +2,7 @@ import pygame
 
 import grid
 import pacman
+import ghost
 import config
 import globals
 
@@ -10,7 +11,7 @@ class Game:
     def __init__(self):
 
         self.grid = grid.Grid()
-        self.pacman = pacman.Pacman((13, 26), 0, 0)
+        self.pacman = ghost.Ghost((13, 26), 0, 0)
 
     def main(self, screen):
 
@@ -20,7 +21,7 @@ class Game:
 
         while running:
 
-            clock.tick(20)
+            # clock.tick(25)
 
             keys = pygame.key.get_pressed()
 
@@ -30,18 +31,18 @@ class Game:
 
                     running = False
 
-            if keys[pygame.K_DOWN]:
-                self.pacman.update_way(self.grid.grid, globals.DOWN)
-            if keys[pygame.K_UP]:
-                self.pacman.update_way(self.grid.grid, globals.UP)
-            if keys[pygame.K_RIGHT]:
-                self.pacman.update_way(self.grid.grid, globals.RIGHT)
-            if keys[pygame.K_LEFT]:
-                self.pacman.update_way(self.grid.grid, globals.LEFT)
+            # if keys[pygame.K_DOWN]:
+            #     self.pacman.update_way(self.grid.grid, globals.DOWN)
+            # if keys[pygame.K_UP]:
+            #     self.pacman.update_way(self.grid.grid, globals.UP)
+            # if keys[pygame.K_RIGHT]:
+            #     self.pacman.update_way(self.grid.grid, globals.RIGHT)
+            # if keys[pygame.K_LEFT]:
+            #     self.pacman.update_way(self.grid.grid, globals.LEFT)
 
             screen.fill((0,0,0,0))
 
-            self.pacman.consume_pellet(self.grid.grid)
+            # self.pacman.consume_pellet(self.grid.grid)
 
             self.grid.draw_grid(screen)
             self.pacman.update(screen, self.grid.grid)

@@ -30,6 +30,46 @@ PELLET_SPRITES = [
     pygame.image.load('images/pellet_0001.png')
 ]
 
+# GHOSTS
+
+GHOSTS_SPRITES = [
+    [ # blinky
+        [
+            [
+                pygame.image.load('images/blinky_left_0000.png'),
+                pygame.image.load('images/blinky_left_0001.png')
+            ],
+            [
+                pygame.image.load('images/blinky_right_0000.png'),
+                pygame.image.load('images/blinky_right_0001.png')
+            ]
+        ],
+
+        [
+            [
+                pygame.image.load('images/blinky_up_0000.png'),
+                pygame.image.load('images/blinky_up_0001.png')
+            ],
+            [
+                pygame.image.load('images/blinky_down_0000.png'),
+                pygame.image.load('images/blinky_down_0001.png')
+            ]
+        ]
+    ],
+
+    [ # pinky
+    ],
+
+    [ # inky
+    ],
+
+    [ # clyde
+    ],
+
+    [ # frightened
+    ]
+]
+
 
 _pac = pygame.image.load('images/pacman_0000.png')
 
