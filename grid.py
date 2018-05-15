@@ -38,7 +38,7 @@ class Grid:
             [  9, 82, 26, 26, 26, 26,122, 26, 26, 58, 26, 26, 74,  9,  9, 82, 26, 26, 58, 26, 26,122, 26, 26, 26, 26, 74,  9], # 33
             [  9, 98,  1, 11, 11,  3, 98,  1, 11, 11, 11,  3, 98,  9,  9, 98,  1, 11, 11, 11,  3, 98,  1, 11, 11,  3, 98,  9], # 34
             [  9, 98,  7, 11,  3,  9, 98,  7, 11, 11, 11,  5, 98,  7,  5, 98,  7, 11, 11, 11,  5, 98,  9,  1, 11,  5, 98,  9], # 35
-            [  9, 54, 26, 74,  9,  9,114, 26, 26, 90, 26, 26, 58,000,000, 58, 26, 26, 90, 26, 26,106,  9,  9, 82, 26, 46,  9], # 36
+            [  9, 54, 26, 74,  9,  9,114, 26, 26, 90, 26, 26, 58, 26, 26, 58, 26, 26, 90, 26, 26,106,  9,  9, 82, 26, 46,  9], # 36
             [  7, 11,  3, 98,  9,  9, 98,  1,  3, 98,  1, 11, 11, 11, 11, 11, 11,  3, 98,  1,  3, 98,  9,  9, 98,  1, 11,  5], # 37
             [  1, 11,  5, 98,  7,  5, 98,  9,  9, 98,  7, 11, 11,  3,  1, 11, 11,  5, 98,  9,  9, 98,  7,  5, 98,  7, 11,  3], # 38
             [  9, 82, 26, 58, 26, 26, 42,  9,  9, 50, 26, 26, 74,  9,  9, 82, 26, 26, 42,  9,  9, 50, 26, 26, 58, 26, 74,  9], # 39
@@ -81,49 +81,14 @@ class Grid:
             x = 0
 
             for tile in line:
-
                 if tile & globals.WALL:
-
                     screen.blit(self.walls[tile >> 1], (x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE))
-
                 elif tile & (globals.PELLET << 1):
-
                     if tile & (globals.SPELLET << 1):
-
                         screen.blit(self.pellets[1], (x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE))
-
                     else:
-
                         screen.blit(self.pellets[0], (x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE))
 
                 x += 1
 
             y += 1
-
-
-
-
-
-
-
-
-
-if __name__ == '__main__':
-
-    g = Grid()
-
-    pygame.init()
-
-    screen = pygame.display.set_mode(SCREEN_SIZE)
-    running = True
-    while running:
-
-        for ev in pygame.event.get():
-
-            if ev.type == pygame.QUIT:
-                running = False
-
-
-        g.draw_grid(screen)
-
-        pygame.display.flip()

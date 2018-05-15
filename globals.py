@@ -10,7 +10,7 @@ UP      = 1 << 2
 RIGHT   = 1 << 1
 LEFT    = 1 << 0
 
-X_DIRECTION = 1
+Y_DIRECTION = 1
 PLUS_WAY    = 1
 
 FONT = 'fonts/ARCADECLASSIC.TTF'
@@ -28,4 +28,35 @@ WALL_SPRITES = [
 PELLET_SPRITES = [
     pygame.image.load('images/pellet_0000.png'),
     pygame.image.load('images/pellet_0001.png')
+]
+
+
+_pac = pygame.image.load('images/pacman_0000.png')
+
+PACMAN_SPRITES = [
+    [
+        [
+            pygame.image.load('images/pacman_left_0000.png'),
+            pygame.image.load('images/pacman_left_0001.png'),
+            _pac
+        ],
+        [
+            pygame.image.load('images/pacman_right_0000.png'),
+            pygame.image.load('images/pacman_right_0001.png'),
+            _pac
+        ]
+    ],
+
+    [
+        [
+            pygame.image.load('images/pacman_up_0000.png'),
+            pygame.image.load('images/pacman_up_0001.png'),
+            _pac
+        ],
+        [
+            pygame.image.load('images/pacman_down_0000.png'),
+            pygame.image.load('images/pacman_down_0001.png'),
+            _pac
+        ]
+    ]
 ]
