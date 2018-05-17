@@ -8,22 +8,34 @@ class Character(pygame.sprite.Sprite):
 
     def __init__(self, grid_pos, speed, way, direction):
         pygame.sprite.Sprite.__init__(self)
+        # self.speed = speed
 
-        self.screen_pos = (grid_pos[0]*config.TILE_SIZE, grid_pos[1]*config.TILE_SIZE)
+        self.reset(grid_pos, speed, way, direction)
 
-        self.grid_pos   = grid_pos
-        self.speed      = speed
-        self.way        = way
-        self.direction  = direction
+    def reset(self, grid_pos, speed, way, direction):
 
-        self.rect = pygame.Rect((self.screen_pos[0], self.screen_pos[1],
-                                 config.TILE_SIZE, config.TILE_SIZE))
+        self.grid_pos = grid_pos
+        self.speed = speed
+        self.scont = 0
+        self.way = way
+        self.direction = direction
+        self.update_screen_pos()
+
+    def update_screen_pos(self):
+
+        self.screen_pos = (self.grid_pos[0]*config.TILE_SIZE, self.grid_pos[1]*config.TILE_SIZE)
+        self.rect = pygame.Rect(self.screen_pos[0], self.screen_pos[1], config.TILE_SIZE, config.TILE_SIZE)
+
+    def update_grid_pos(self):
+
+        if (self.screen_pos[0]%config.TILE_SIZE == 0) and (self.screen_pos[1]%config.TILE_SIZE == 0):
+            self.grid_pos = (self.screen_pos[0]//config.TILE_SIZE, self.screen_pos[1]//config.TILE_SIZE)
 
     def move(self):
 
         mv = self.speed
 
-        if self.scont + mv >= config.TILE_SIZE:
+        if self.scont + mv > config.TILE_SIZE:
 
             mv = config.TILE_SIZE - self.scont
             self.scont = 0
@@ -47,16 +59,17 @@ class Character(pygame.sprite.Sprite):
                 self.rect.x -= mv
                 self.screen_pos = (self.screen_pos[0] - mv, self.screen_pos[1])
 
-        if (self.screen_pos[0]%config.TILE_SIZE == 0) and (self.screen_pos[1]%config.TILE_SIZE == 0):
-            self.grid_pos = (self.screen_pos[0]//config.TILE_SIZE, self.screen_pos[1]//config.TILE_SIZE)
+        # update grid_pos
+
+        self.update_grid_pos()
+
+        # teleport
 
         if self.grid_pos[0] < 0:
             self.grid_pos = (config.GRID_SIZE[0] - 1, self.grid_pos[1])
-            self.screen_pos = (self.grid_pos[0]*config.TILE_SIZE, self.grid_pos[1]*config.TILE_SIZE)
-            self.rect = pygame.Rect(self.screen_pos[0], self.screen_pos[1], config.TILE_SIZE, config.TILE_SIZE)
+            self.update_screen_pos()
 
         elif self.grid_pos[0] >= config.GRID_SIZE[0] :
 
             self.grid_pos = (0, self.grid_pos[1])
-            self.screen_pos = (self.grid_pos[0]*config.TILE_SIZE, self.grid_pos[1]*config.TILE_SIZE)
-            self.rect = pygame.Rect(self.screen_pos[0], self.screen_pos[1], config.TILE_SIZE, config.TILE_SIZE)
+            self.update_screen_pos()

@@ -5,7 +5,7 @@ import config
 
 class Pacman(character.Character):
 
-    lives = 3
+    lives = 5
     score = 0
 
     sprites = globals.PACMAN_SPRITES

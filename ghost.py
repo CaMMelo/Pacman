@@ -6,25 +6,32 @@ import config
 from random import randint
 
 # states
-CHASE       = 0
-FRIGHTENED  = 1
-SCATTER     = 2
+
+CHASE       = 20
+SCATTER     = 7
+FRIGHTENED  = 5
+
+FAST        = 4
+SLOW        = 2
 
 class Ghost(character.Character):
 
-    state = CHASE
-
     frightened_sprites = globals.GHOSTS_SPRITES[4]
     current = 0
+    state = CHASE
 
     def __init__(self, grid_pos, way, direction, home):
-        super().__init__(grid_pos, 3, way, direction)
+        super().__init__(grid_pos, FAST, way, direction)
 
         self.home = home
 
     def euclidians_distance(self, a, b):
 
         return ((b[0]-a[0])**2 + (b[1]-a[1])**2)**(1/2)
+
+    def reset(self, grid_pos, speed, way, direction):
+        super().reset(grid_pos, speed, way, direction)
+        self.state = CHASE
 
     def update_way(self, grid, chase_args):
 
@@ -101,8 +108,8 @@ class Ghost(character.Character):
 
     def update(self, screen, grid, chase_args):
 
-        self.move()
         self.update_way(grid, chase_args)
+        self.move()
 
         if self.state == FRIGHTENED:
             screen.blit(self.frightened_sprites[self.current], self.rect)
@@ -110,6 +117,7 @@ class Ghost(character.Character):
             screen.blit(self.sprites[self.direction][self.way][self.current], self.rect)
 
         self.current = (self.current + 1 ) % 2
+
 
 class Blinky(Ghost):
 
