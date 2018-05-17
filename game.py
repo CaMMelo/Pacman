@@ -11,6 +11,7 @@ CHANGESTATEEVENT = pygame.USEREVENT + 1
 class Game:
 
     ghosts_state = ghost.CHASE
+    ghost_value = 200
 
     def __init__(self):
 
@@ -41,20 +42,43 @@ class Game:
 
     def game_over(self, screen):
         ''' draw game over screen '''
-        pass
+
+        text = globals.FONT.render('GAME OVER', True, (255,0,0))
+        pos = (config.SCREEN_SIZE[0] // 2 - text.get_width() // 2, 19.8 * config.TILE_SIZE)
+        screen.blit(text, pos)
 
     def victory(self, screen):
         ''' draw victory screen '''
+        
+        text = globals.FONT.render('YOU WON!!', True, (0,0,255))
+        pos = (config.SCREEN_SIZE[0] // 2 - text.get_width() // 2, 19.8 * config.TILE_SIZE)
+        screen.blit(text, pos)
 
-    def draw_lifes(self, screen, grid):
-        pass
+    def draw_lifes(self, screen):
 
-    def draw_score(self, screen, grid):
-        pass
+        start = (1, 34.3)
+        screen_pos = [start[0]*config.TILE_SIZE, start[1]*config.TILE_SIZE]
+
+        for l in range(0, self.pacman.lives - 1):
+
+            screen.blit(globals.PACMAN_SPRITES[0][0][0], screen_pos)
+            screen_pos[0] += config.TILE_SIZE*2
+
+    def draw_score(self, screen):
+
+        text = globals.FONT.render('SCORE', True, (255,255,255))
+        pos = (config.SCREEN_SIZE[0] // 2 - text.get_width() // 2, 0)
+        screen.blit(text, pos)
+
+        text = globals.FONT.render(str(self.pacman.score), True, (255,255,255))
+        pos = (config.SCREEN_SIZE[0] // 2 - text.get_width() // 2, config.TILE_SIZE)
+        screen.blit(text, pos)
+
 
     def change_ghosts_state(self, spill = False):
 
         speed = ghost.FAST
+        self.ghost_value = 200
 
         if spill:
 
@@ -84,18 +108,7 @@ class Game:
 
         while running:
 
-            delay = 0
             clock.tick(60)
-
-            if self.pacman.lives == 0:
-
-                self.game_over(screen)
-                running = False
-
-            if self.grid.pellet_count == 0:
-
-                self.victory(screen)
-                running = False
 
             keys = pygame.key.get_pressed()
 
@@ -129,23 +142,35 @@ class Game:
             for g in ghosts:
 
                 if g.state == ghost.FRIGHTENED:
+
                     g.reset((13, 14), ghost.FAST, 0, 0)
-                    delay = 500
+                    self.pacman.score += self.ghost_value
+                    self.ghost_value >>= 1
 
                 else:
+
                     self.pacman.lives -= 1
                     self.reset_positions()
-                    delay = 500
+                    break
 
             self.grid.draw_grid(screen)
             self.pacman.update(screen, self.grid.grid)
             self.ghosts.update(screen, self.grid.grid, [self.pacman.grid_pos, self.blinky.grid_pos])
 
-            self.draw_score(screen, self.grid.grid)
-            self.draw_lifes(screen, self.grid.grid)
+            self.draw_score(screen)
+            self.draw_lifes(screen)
+
+            # end game
+
+            if self.pacman.lives == 0:
+                self.game_over(screen)
+                running = False
+
+            if self.grid.pellet_count == 0:
+                self.victory(screen)
+                running = False
 
             pygame.display.flip()
-            pygame.time.delay(delay)
 
 
 

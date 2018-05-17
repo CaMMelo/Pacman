@@ -81,12 +81,19 @@ class Grid:
             x = 0
 
             for tile in line:
+
                 if tile & globals.WALL:
+
                     screen.blit(self.walls[tile >> 1], (x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE))
+
                 elif tile & (globals.PELLET << 1):
+
                     if tile & (globals.SPELLET << 1):
+
                         screen.blit(self.pellets[1], (x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE))
+
                     else:
+
                         screen.blit(self.pellets[0], (x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE))
 
                 x += 1

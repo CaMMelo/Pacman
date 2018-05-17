@@ -11,7 +11,7 @@ CHASE       = 20
 SCATTER     = 7
 FRIGHTENED  = 5
 
-FAST        = 4
+FAST        = 3
 SLOW        = 2
 
 class Ghost(character.Character):

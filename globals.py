@@ -13,7 +13,8 @@ LEFT    = 1 << 0
 Y_DIRECTION = 1
 PLUS_WAY    = 1
 
-FONT = 'fonts/ARCADECLASSIC.TTF'
+pygame.font.init()
+FONT = pygame.font.Font('fonts/ARCADECLASSIC.TTF', 20)
 
 WALL_SPRITES = [
     pygame.image.load('images/wall_0000.png'),
