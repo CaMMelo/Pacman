@@ -3,16 +3,20 @@ import character
 import globals
 import config
 
+
+SPEED = 4
+LIVES = 5
+
 class Pacman(character.Character):
 
-    lives = 5
+    lives = LIVES
     score = 0
 
     sprites = globals.PACMAN_SPRITES
     current = 0
 
     def __init__(self, grid_pos, way, direction):
-        super().__init__(grid_pos, 4, way, direction)
+        super().__init__(grid_pos, SPEED, way, direction)
 
     def consume_pellet(self, grid):
 

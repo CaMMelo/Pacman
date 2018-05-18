@@ -3,6 +3,9 @@ import globals
 
 from config import TILE_SIZE, SCREEN_SIZE
 
+PACMAN_STARTPOS = (13, 26)
+GHOST_STARTPOS = (13, 14)
+
 class Grid:
 
     def __init__(self):

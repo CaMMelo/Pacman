@@ -7,9 +7,9 @@ from random import randint
 
 # states
 
-CHASE       = 20
-SCATTER     = 7
-FRIGHTENED  = 5
+CHASE       = 10
+SCATTER     = 5
+FRIGHTENED  = 3
 
 FAST        = 3
 SLOW        = 2
