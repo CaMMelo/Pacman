@@ -9,12 +9,18 @@ import globals
 CHANGESTATEEVENT = pygame.USEREVENT + 1
 GHOSTHOUSEEVENT = pygame.USEREVENT + 2
 
+class HumanAgent:
+
+    def decision(self, *args):
+        return pygame.key.get_pressed()
+
+
 class Game:
 
     ghosts_state = ghost.CHASE
     ghost_value = 200
 
-    def __init__(self, pacman_agent=pacman.agent):
+    def __init__(self, pacman_agent=HumanAgent()):
 
         self.pacman_agent = pacman_agent
 
@@ -150,8 +156,8 @@ class Game:
 
                     running = False
 
-            keys = self.pacman_agent(self.pacman, [self.blinky, self.pinky,
-                self.inky, self.clyde], self.grid)
+            keys = self.pacman_agent.decision(self.pacman,
+                [self.blinky, self.pinky, self.inky, self.clyde], self.grid)
 
             if keys[pygame.K_DOWN]:
                 self.pacman.update_way(self.grid.grid, globals.DOWN)
