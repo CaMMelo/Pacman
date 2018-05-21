@@ -136,7 +136,7 @@ class Game:
 
         while running:
 
-            clock.tick(30)
+            clock.tick(40)
 
             if pygame.event.get(CHANGESTATEEVENT):
                 self.change_ghosts_state()
