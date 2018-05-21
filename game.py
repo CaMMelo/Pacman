@@ -14,7 +14,9 @@ class Game:
     ghosts_state = ghost.CHASE
     ghost_value = 200
 
-    def __init__(self):
+    def __init__(self, pacman_agent=pacman.agent):
+
+        self.pacman_agent = pacman_agent
 
         self.grid   = grid.Grid()
         self.pacman = pacman.Pacman(grid.PACMAN_STARTPOS, 0, 0)
@@ -52,8 +54,20 @@ class Game:
 
         self.pacman.reset(grid.PACMAN_STARTPOS, pacman.SPEED, 0, 0)
 
-        for g in self.ghosts:
-            g.reset(grid.GHOST_STARTPOS, ghost.FAST, 0, 0)
+        self.ghosts.empty()
+        self.ghost_house.empty()
+
+        self.blinky.reset(grid.GHOST_STARTPOS, ghost.FAST, 0, 0)
+
+        self.inky.reset(grid.GHOST_STARTPOS, ghost.FAST, 0, 0)
+        self.pinky.reset(grid.GHOST_STARTPOS, ghost.FAST, 0, 0)
+        self.clyde.reset(grid.GHOST_STARTPOS, ghost.FAST, 0, 0)
+
+        self.ghosts.add(self.blinky)
+
+        self.ghost_house.add(self.inky)
+        self.ghost_house.add(self.pinky)
+        self.ghost_house.add(self.clyde)
 
     def game_over(self, screen):
         ''' draw game over screen '''
@@ -88,7 +102,6 @@ class Game:
         text = globals.FONT.render(str(self.pacman.score), True, (255,255,255))
         pos = (config.SCREEN_SIZE[0] // 2 - text.get_width() // 2, config.TILE_SIZE)
         screen.blit(text, pos)
-
 
     def change_ghosts_state(self, spill = False):
 
@@ -125,8 +138,6 @@ class Game:
 
             clock.tick(30)
 
-            keys = pygame.key.get_pressed()
-
             if pygame.event.get(CHANGESTATEEVENT):
                 self.change_ghosts_state()
 
@@ -139,6 +150,9 @@ class Game:
 
                     running = False
 
+            keys = self.pacman_agent(self.pacman, [self.blinky, self.pinky,
+                self.inky, self.clyde], self.grid)
+
             if keys[pygame.K_DOWN]:
                 self.pacman.update_way(self.grid.grid, globals.DOWN)
             if keys[pygame.K_UP]:
@@ -147,8 +161,6 @@ class Game:
                 self.pacman.update_way(self.grid.grid, globals.RIGHT)
             if keys[pygame.K_LEFT]:
                 self.pacman.update_way(self.grid.grid, globals.LEFT)
-
-            screen.fill((30,30,30,0))
 
             if self.pacman.consume_pellet(self.grid.grid):
                 self.change_ghosts_state(True)
@@ -172,6 +184,9 @@ class Game:
                     self.pacman.lives -= 1
                     self.reset_positions()
                     break
+
+
+            screen.fill((30,30,30,0))
 
             self.grid.draw_grid(screen)
             self.pacman.update(screen, self.grid.grid)

@@ -3,7 +3,6 @@ import character
 import globals
 import config
 
-
 SPEED = 4
 LIVES = 5
 
@@ -69,3 +68,7 @@ class Pacman(character.Character):
         screen.blit(self.sprites[self.direction][self.way][self.current], self.rect)
 
         self.current = (self.current + 1) % 3
+
+def agent(*args, **kwargs):
+
+    return pygame.key.get_pressed()
