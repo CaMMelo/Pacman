@@ -1,26 +1,20 @@
 import pygame
-
 import grid
 import pacman
 import ghost
 import config
 import globals
+import agent
 
 CHANGESTATEEVENT = pygame.USEREVENT + 1
-GHOSTHOUSEEVENT = pygame.USEREVENT + 2
-
-class HumanAgent:
-
-    def decision(self, *args):
-        return pygame.key.get_pressed()
-
+GHOSTHOUSEEVENT  = pygame.USEREVENT + 2
 
 class Game:
 
     ghosts_state = ghost.CHASE
     ghost_value = 200
 
-    def __init__(self, pacman_agent=HumanAgent()):
+    def __init__(self, pacman_agent):
 
         self.pacman_agent = pacman_agent
 
@@ -40,8 +34,11 @@ class Game:
         self.ghost_house.add(self.pinky)
         self.ghost_house.add(self.clyde)
 
-        pygame.time.set_timer(CHANGESTATEEVENT, self.ghosts_state * 1000)
+        pygame.time.set_timer(CHANGESTATEEVENT, int(self.ghosts_state * 1000))
         pygame.time.set_timer(GHOSTHOUSEEVENT, 2 * 1000)
+
+
+        self._font = pygame.font.Font(globals.FONT, globals.FONT_SIZE)
 
     def ghost_house_event(self):
 
@@ -58,16 +55,16 @@ class Game:
     def reset_positions(self):
         ''' reset all character positions '''
 
-        self.pacman.reset(grid.PACMAN_STARTPOS, pacman.SPEED, 0, 0)
+        self.pacman.reset(grid.PACMAN_STARTPOS, globals.FAST, 0, 0)
 
         self.ghosts.empty()
         self.ghost_house.empty()
 
-        self.blinky.reset(grid.GHOST_STARTPOS, ghost.FAST, 0, 0)
+        self.blinky.reset(grid.GHOST_STARTPOS, globals.FAST, 0, 0)
 
-        self.inky.reset(grid.GHOST_STARTPOS, ghost.FAST, 0, 0)
-        self.pinky.reset(grid.GHOST_STARTPOS, ghost.FAST, 0, 0)
-        self.clyde.reset(grid.GHOST_STARTPOS, ghost.FAST, 0, 0)
+        self.inky.reset(grid.GHOST_STARTPOS, globals.FAST, 0, 0)
+        self.pinky.reset(grid.GHOST_STARTPOS, globals.FAST, 0, 0)
+        self.clyde.reset(grid.GHOST_STARTPOS, globals.FAST, 0, 0)
 
         self.ghosts.add(self.blinky)
 
@@ -75,17 +72,19 @@ class Game:
         self.ghost_house.add(self.pinky)
         self.ghost_house.add(self.clyde)
 
+        pygame.time.set_timer(GHOSTHOUSEEVENT, 2 * 1000)
+
     def game_over(self, screen):
         ''' draw game over screen '''
 
-        text = globals.FONT.render('GAME OVER', True, (255,0,0))
+        text = self._font.render('GAME OVER', True, (255,0,0))
         pos = (config.SCREEN_SIZE[0] // 2 - text.get_width() // 2, 19.8 * config.TILE_SIZE)
         screen.blit(text, pos)
 
     def victory(self, screen):
         ''' draw victory screen '''
 
-        text = globals.FONT.render('YOU WON!!', True, (0,0,255))
+        text = self._font.render('YOU WON!!', True, (0,0,255))
         pos = (config.SCREEN_SIZE[0] // 2 - text.get_width() // 2, 19.8 * config.TILE_SIZE)
         screen.blit(text, pos)
 
@@ -101,23 +100,23 @@ class Game:
 
     def draw_score(self, screen):
 
-        text = globals.FONT.render('SCORE', True, (255,255,255))
+        text = self._font.render('SCORE', True, (255,255,255))
         pos = (config.SCREEN_SIZE[0] // 2 - text.get_width() // 2, 0)
         screen.blit(text, pos)
 
-        text = globals.FONT.render(str(self.pacman.score), True, (255,255,255))
+        text = self._font.render(str(self.pacman.score), True, (255,255,255))
         pos = (config.SCREEN_SIZE[0] // 2 - text.get_width() // 2, config.TILE_SIZE)
         screen.blit(text, pos)
 
     def change_ghosts_state(self, spill = False):
 
-        speed = ghost.FAST
+        speed = globals.FAST
         self.ghost_value = 200
 
         if spill:
 
             state = ghost.FRIGHTENED
-            speed = ghost.SLOW
+            speed = globals.SLOW
 
         else:
 
@@ -132,7 +131,7 @@ class Game:
             g.speed = speed
             g.state = state
 
-        pygame.time.set_timer(CHANGESTATEEVENT, self.ghosts_state * 1000)
+        pygame.time.set_timer(CHANGESTATEEVENT,int(self.ghosts_state * 1000))
 
     def loop(self, screen):
 
@@ -142,7 +141,7 @@ class Game:
 
         while running:
 
-            clock.tick(40)
+            clock.tick(globals.FPS)
 
             if pygame.event.get(CHANGESTATEEVENT):
                 self.change_ghosts_state()
@@ -179,7 +178,7 @@ class Game:
 
                 if g.state == ghost.FRIGHTENED:
 
-                    g.reset(grid.GHOST_STARTPOS, ghost.FAST, 0, 0)
+                    g.reset(grid.GHOST_STARTPOS, globals.FAST, 0, 0)
                     self.ghosts.remove(g)
                     self.ghost_house.add(g)
                     self.pacman.score += self.ghost_value
@@ -195,8 +194,8 @@ class Game:
             screen.fill((30,30,30,0))
 
             self.grid.draw_grid(screen)
-            self.pacman.update(screen, self.grid.grid)
             self.ghosts.update(screen, self.grid.grid, [self.pacman.grid_pos, self.blinky.grid_pos])
+            self.pacman.update(screen, self.grid.grid)
 
             self.draw_score(screen)
             self.draw_lifes(screen)
@@ -212,11 +211,3 @@ class Game:
                 running = False
 
             pygame.display.flip()
-
-if __name__ == '__main__':
-
-    pygame.init()
-
-    g = Game()
-
-    g.loop(pygame.display.set_mode(config.SCREEN_SIZE))

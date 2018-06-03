@@ -7,12 +7,9 @@ from random import randint
 
 # states
 
-CHASE       = 10
-SCATTER     = 5
-FRIGHTENED  = 3
-
-FAST        = 3
-SLOW        = 2
+CHASE       = (20 * globals.FAST) / globals.FPS
+SCATTER     = (7 * globals.FAST)  / globals.FPS
+FRIGHTENED  = (3 * globals.SLOW)  / globals.FPS
 
 class Ghost(character.Character):
 
@@ -21,7 +18,7 @@ class Ghost(character.Character):
     state = CHASE
 
     def __init__(self, grid_pos, way, direction, home):
-        super().__init__(grid_pos, FAST, way, direction)
+        super().__init__(grid_pos, globals.FAST, way, direction)
 
         self.home = home
 
