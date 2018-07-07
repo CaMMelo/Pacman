@@ -1,2 +1,6 @@
 .*
+*.zip
+*.pdf
+*.txt
+neat-checkpoint-*
 __pycache__

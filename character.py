@@ -5,10 +5,11 @@ import globals
 class Character(pygame.sprite.Sprite):
 
     scont = 0
+    distance = 0 # the distance runned by this character
 
     def __init__(self, grid_pos, speed, way, direction):
         pygame.sprite.Sprite.__init__(self)
-        # self.speed = speed
+        self.speed = speed
 
         self.reset(grid_pos, speed, way, direction)
 

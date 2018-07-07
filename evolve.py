@@ -1,32 +1,55 @@
+#!/usr/bin/python
+
 import neat
-import agent as agnt
-import os
+import agent
 import pygame
 import app
+import time
+import pickle
 
-def eval_genome(genome, config):
+def pop_fitness(genomes, config):
 
+    for id, genome in genomes:
+
+        genome.fitness = fitness(genome, config)
+
+def fitness(genome, config):
+
+    # calculate the fitness of a genome
     net = neat.nn.FeedForwardNetwork.create(genome, config)
-    agent = agnt.SmartAgent(net)
+    brain = agent.SmartAgent(net)
 
-    application = app.PacmanApp(agent)
+    game = app.PacmanApp(brain)
 
-    max = application.g.grid.pellet_count
+    game.run()
 
-    application.run()
+    return game.game.pacman.distance
 
-    return application.g.pacman.score / max
+def run(cfgfile):
+
+    config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction,
+                         neat.DefaultSpeciesSet, neat.DefaultStagnation, cfgfile)
+
+    p = neat.Population(config)
+    # irá carregar a ultima geração execuda
+    # p = neat.Checkpointer.restore_checkpoint('neat-checkpoint-?')
+
+    # reporter to see outputs on stdout
+    p.add_reporter(neat.StdOutReporter(True))
+    stats = neat.StatisticsReporter()
+    p.add_reporter(stats)
+    p.add_reporter(neat.Checkpointer(100))
+
+    # executa 3000 gerações
+    # pe = neat.ParallelEvaluator(2, fitness)
+    winner = p.run(pop_fitness, 3000)
+
+    return winner # retorna o resultado do treinamento
 
 
-config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction,
-                     neat.DefaultSpeciesSet, neat.DefaultStagnation,
-                     'neat_configuration')
+if __name__ == '__main__':
+    result = run('neat_configuration')
 
-p = neat.Population(config)
-
-p.add_reporter(neat.StdOutReporter(True))
-stats = neat.StatisticsReporter()
-p.add_reporter(stats)
-
-pe = neat.ParallelEvaluator(4, eval_genome)
-winner = p.run(pe.evaluate, 5000)
+    with open('output.net', 'wb+') as ostream:
+        result = pickle.dumps(result)
+        ostream.write(result)

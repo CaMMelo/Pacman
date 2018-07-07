@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import pygame
 import agent
 import game
@@ -13,11 +15,11 @@ class PacmanApp:
 
         self.screen = pygame.display.set_mode(config.SCREEN_SIZE)
 
-        self.g = game.Game(self.pacman_agent)
+        self.game = game.Game(self.pacman_agent)
 
     def run(self):
 
-        self.g.loop(self.screen)
+        self.game.loop(self.screen)
 
 if __name__ == '__main__':
 

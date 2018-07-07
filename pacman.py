@@ -3,7 +3,7 @@ import character
 import globals
 import config
 
-LIVES = 3
+LIVES = 1
 
 class Pacman(character.Character):
 
@@ -18,19 +18,21 @@ class Pacman(character.Character):
 
     def consume_pellet(self, grid):
 
-        flags = grid[self.grid_pos[1]][self.grid_pos[0]] >> 1
+        flags = grid.grid[self.grid_pos[1]][self.grid_pos[0]] >> 1
         super = False
 
         if flags & globals.PELLET:
 
+            self.distance += 10
             self.score += 10
 
             if flags & globals.SPELLET:
 
-                self.score += 40
+                self.score += 30
                 super = True
 
-            grid[self.grid_pos[1]][self.grid_pos[0]] &= ~((globals.PELLET | globals.SPELLET) << 1)
+            grid.grid[self.grid_pos[1]][self.grid_pos[0]] &= ~((globals.PELLET | globals.SPELLET) << 1)
+            grid.pcount -= 1
 
         return super
 

@@ -13,12 +13,12 @@ LEFT    = 1 << 0
 Y_DIRECTION = 1
 PLUS_WAY    = 1
 
-FAST = 8
-SLOW = 6
+FAST = 9
+SLOW = 5
 
-FPS = 120
+FPS = 0
 
-FONT = 'fonts/ARCADECLASSIC.TTF'
+FONT = 'fonts/Roboto-Black.ttf'
 FONT_SIZE = 20
 
 WALL_SPRITES = [
@@ -171,3 +171,7 @@ PACMAN_SPRITES = [
         ]
     ]
 ]
+
+
+def euclidians_distance(a, b):
+    return ((b[0]-a[0])**2 + (b[1]-a[1])**2)**(1/2)

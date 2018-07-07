@@ -8,10 +8,11 @@ import agent
 
 CHANGESTATEEVENT = pygame.USEREVENT + 1
 GHOSTHOUSEEVENT  = pygame.USEREVENT + 2
+GHOSTHOUSETIME = 1
 
 class Game:
 
-    ghosts_state = ghost.CHASE
+    ghosts_state = ghost.DEFAULT
     ghost_value = 200
 
     def __init__(self, pacman_agent):
@@ -35,7 +36,7 @@ class Game:
         self.ghost_house.add(self.clyde)
 
         pygame.time.set_timer(CHANGESTATEEVENT, int(self.ghosts_state * 1000))
-        pygame.time.set_timer(GHOSTHOUSEEVENT, 2 * 1000)
+        pygame.time.set_timer(GHOSTHOUSEEVENT, int(GHOSTHOUSETIME * 1000))
 
 
         self._font = pygame.font.Font(globals.FONT, globals.FONT_SIZE)
@@ -72,7 +73,9 @@ class Game:
         self.ghost_house.add(self.pinky)
         self.ghost_house.add(self.clyde)
 
-        pygame.time.set_timer(GHOSTHOUSEEVENT, 2 * 1000)
+        pygame.time.set_timer(CHANGESTATEEVENT, int(ghost.CHASE * 1000))
+        pygame.time.set_timer(GHOSTHOUSEEVENT, int(GHOSTHOUSETIME * 1000))
+
 
     def game_over(self, screen):
         ''' draw game over screen '''
@@ -101,11 +104,29 @@ class Game:
     def draw_score(self, screen):
 
         text = self._font.render('SCORE', True, (255,255,255))
+        pos = (0, 0)
+        screen.blit(text, pos)
+
+        x = text.get_width() // 2
+        text = self._font.render(f'{self.pacman.score}', True, (255,255,255))
+        pos = (x - text.get_width() // 2, config.TILE_SIZE)
+        screen.blit(text, pos)
+
+        text = self._font.render('FITNESS', True, (255,255,255))
         pos = (config.SCREEN_SIZE[0] // 2 - text.get_width() // 2, 0)
         screen.blit(text, pos)
 
-        text = self._font.render(str(self.pacman.score), True, (255,255,255))
+        text = self._font.render(f'{self.pacman.distance:.2f}', True, (255,255,255))
         pos = (config.SCREEN_SIZE[0] // 2 - text.get_width() // 2, config.TILE_SIZE)
+        screen.blit(text, pos)
+
+
+        pct = 1- (self.grid.pcount / 245)
+        r = int(255 * (1-pct))
+        g = int(255*pct)
+        pct *= 100
+        text = self._font.render(f'{pct:.2f}%', True, (r, g , 0 ))
+        pos = (config.SCREEN_SIZE[0] - text.get_width(), config.TILE_SIZE)
         screen.blit(text, pos)
 
     def change_ghosts_state(self, spill = False):
@@ -115,6 +136,7 @@ class Game:
 
         if spill:
 
+            self.ghosts_state = ghost.FRIGHTENED
             state = ghost.FRIGHTENED
             speed = globals.SLOW
 
@@ -138,6 +160,13 @@ class Game:
         running = True
 
         clock = pygame.time.Clock()
+
+        _dists = {
+            self.blinky: 0,
+            self.inky: 0,
+            self.pinky: 0,
+            self.clyde: 0,
+        }
 
         while running:
 
@@ -167,8 +196,9 @@ class Game:
             if keys[pygame.K_LEFT]:
                 self.pacman.update_way(self.grid.grid, globals.LEFT)
 
-            if self.pacman.consume_pellet(self.grid.grid):
-                self.change_ghosts_state(True)
+            if self.pacman.consume_pellet(self.grid):
+               self.change_ghosts_state(True) # assusta os fantasmas
+            # self.pacman.consume_pellet(self.grid) # não assusta os fantasmas
 
             # check collisions
 
@@ -190,8 +220,26 @@ class Game:
                     self.reset_positions()
                     break
 
+            # renderiza a cena
 
-            screen.fill((30,30,30,0))
+
+            ## FITNESS
+
+            for g in self.ghosts:
+
+                dist = globals.euclidians_distance(self.pacman.grid_pos, g.grid_pos)
+                diff = dist - _dists[g]
+
+                diff = 10 if diff == 0 else diff
+                diff = diff*10*len(self.ghosts) if diff < 0 else diff
+
+                self.pacman.distance += diff
+
+                _dists[g] = dist
+
+            ## FITNESS
+
+            screen.fill((0,0,0,0))
 
             self.grid.draw_grid(screen)
             self.ghosts.update(screen, self.grid.grid, [self.pacman.grid_pos, self.blinky.grid_pos])
@@ -206,7 +254,7 @@ class Game:
                 self.game_over(screen)
                 running = False
 
-            if self.grid.pellet_count == 0:
+            if self.grid.pcount == 0:
                 self.victory(screen)
                 running = False
 
